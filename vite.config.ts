@@ -1,9 +1,23 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { mkdirSync, writeFileSync } from 'node:fs';
+function verifyProductionModules(): Plugin {
+  return {
+    name: 'verify-test-tools-excluded',
+    generateBundle(_options, bundle) {
+      const modules = Object.values(bundle).flatMap(chunk => chunk.type === 'chunk' ? Object.keys(chunk.modules) : []);
+      const packages = [...new Set(modules.flatMap(id => [...id.replaceAll('\\', '/').matchAll(/(?:^|\/)node_modules\/((?:@[^/]+\/)?[^/]+)/g)].map(match => match[1])))].sort();
+      const testPackages = ['vitest', '@vitest/mocker', 'tinypool'];
+      if (packages.some(name => testPackages.includes(name))) throw new Error('A vulnerable test tool entered the production bundle.');
+      mkdirSync('artifacts', { recursive: true });
+      writeFileSync('artifacts/bundle-modules.json', JSON.stringify({ bundledPackages: packages, excludedTestPackages: testPackages, moduleCount: modules.length }, null, 2) + '\n');
+    }
+  };
+}
 export default defineConfig({
   base: process.env.BASE_PATH || './',
   build: { target: 'safari16.4', assetsInlineLimit: 0 },
-  plugins: [VitePWA({
+  plugins: [verifyProductionModules(), VitePWA({
     strategies: 'generateSW', registerType: 'prompt', injectRegister: false,
     includeAssets: ['*.png', 'logo.svg', 'licenses/*.txt'],
     manifest: {

@@ -1,68 +1,55 @@
 # 交付自测记录
 
-执行日期：2026-10-14。本轮只使用项目内依赖与文件，无联网、无浏览器、无项目外工具。
+执行日期：2026-10-14。本轮增加电量组件并处理用户提供的审计报告。只使用项目内文件与依赖，无联网、无浏览器、无Git提交或推送。
 
 | 检查 | 实际结果 |
 | --- | --- |
-| 中断后文件完整性 | src / scripts / tests / docs / .github 无空文件；4 个 JavaScript 脚本语法通过；上次残留的单个 dseg 字体已被完整构建刷新为12款 |
-| DSEG 许可证修复 | 实际位置为 node_modules/dseg/DSEG-LICENSE.txt；脚本已支持带前缀的许可证名，并先校验输入再写字体产物 |
-| npm run build | 通过：12款字体裁剪、图标生成、TypeScript检查、Vite构建、generateSW及资源预算检查全部完成 |
-| npm test | 通过：2个测试文件、68项测试、0失败 |
-| 16.1规定的核心单测 | 整秒对齐、中英文日期、Dublin夏令时回拨、12/24小时、32套配色两项3:1对比度、设置默认合并/迁移、36条双语语录、OKLCH色域全部通过 |
-| 字体有效性和授权 | 12款 WOFF2 可解码、包含全部数字且仅保留规定字符；每款许可证有效；DSEG许可证与包内原文逐字节一致 |
-| 设置容量与异常值 | 8 KB容量、120字符语录、异常超长主题/字体清理均通过单测 |
-| WebKit截图 / 浏览器UI / 离线重载 | 按本轮用户明确要求不使用浏览器而跳过；384张截图与交互验证脚本保留供以后运行，未声称通过 |
-| 堆内存 / CPU / 真机流畅度 | 未实测，需要iPhone按README清单验收 |
-| npm audit | 仅运行offline审计；项目内新缓存无公告，0项输出不可信。用户所述3项漏洞待联网报告，不声称已修复或仅影响开发工具 |
-| git init -b main | 仍失败：根目录 .git: Operation not permitted；未修改项目外Git仓库，未提交 |
-| GitHub远程 / 推送 | 原目录没有Git仓库和已配置远程；禁止联网，未推送 |
+| npm run build | 通过：字体、图标、TypeScript、Vite、generateSW、测试工具排除和资源预算全部通过 |
+| npm test | 3个文件、80项测试通过，0失败：核心54项、字体14项、电量12项 |
+| SPEC 16.1规定核心断言 | 整秒对齐、中英文日期、都柏林夏令时回拨、12/24小时、32套配色对比度、设置合并/迁移、36条双语语录和OKLCH色域全部通过 |
+| 字体和许可证 | 12款WOFF2可解码、具备数字字形、仅保留规定字符，许可证及DSEG原文一致性检查通过 |
+| 电量 API 特性检测 | 无API、不可调用、异步拒绝及同步抛错均不创建组件或占位，不报错 |
+| 电量SVG | 15% / 50% / 100%填充宽度2.7 / 9 / 18；15%未充电红色，20%边界非红色；充电保留比例、显示闪电、取消低电量红色 |
+| 电量更新和设置 | levelchange / chargingchange即时更新并复用SVG；重复start不重复监听；销毁解除监听；开关、百分比、双语标签及旧v1设置默认合并通过 |
+| 主题与睡眠代码检查 | SVG当前色继承--muted，位于clock-content及睡眠遮罩下，无新增轮询；主题变量沿用1.2秒过渡 |
+| iPhone顶部安全区 | 竖屏CSS明确使用max(65px, env(safe-area-inset-top) + 16px)；未使用浏览器或真机，不能声称设备视觉验收通过 |
+| WebKit截图 / 页面交互 / 离线重载 | 继续遵守用户不使用浏览器的要求，本轮跳过 |
+| npm审计 | 已读取用户联网生成的audit-report.json；1 moderate / 2 critical均在Vitest工具链，不进入生产产物；未宣称漏洞已修复 |
+| 依赖升级 | 报告提供的修复是Vitest 5.0.4主版本升级，不视为无兼容风险；本轮不强制升级，不联网安装，不使用audit fix --force |
+| Git | 用户已完成首次提交；本轮按要求不尝试提交，最终提供git命令 |
 
-## 最终构建体积
+## 资源预算
 
-预算按1 KB=1024字节，JS含所有构建JS和Service Worker的gzip合计。离线预算用整个dist文件夹的原始体积检查，比仅预缓存更保守。
+1 KB = 1024字节。JS计入所有生产JS和Service Worker的gzip体积；离线总量按整个dist原始体积保守检查。
 
 | 项目 | 实测字节 | 实测KB | 上限KB |
 | --- | --- | --- | --- |
-| JS gzip | 35336 | 34.51 | 50 |
-| CSS gzip | 5004 | 4.89 | 15 |
+| JS gzip | 36452 | 35.60 | 50 |
+| CSS gzip | 5110 | 4.99 | 15 |
 | 字体 | 33828 | 33.04 | 150 |
-| 整个dist | 206140 | 201.31 | 400 |
+| 整个dist | 210568 | 205.63 | 400 |
 
-具体构建体积同根目录 `artifacts-budget.json`。54项核心测试加14项字体产物测试共68项。生成的字体、PNG图标和许可证均在项目内，不需额外设计素材或字体替代。
+记录同根目录 `artifacts-budget.json`。
 
-## 本轮修复
+## 漏洞归属
 
-- 许可证识别不再遗漏 DSEG-LICENSE.txt；缺少许可证时不会先写出该字体。
-- 修复固定外观模式下，普通设置修改会错误清除日夜颜色预览的问题。
-- 设置迁移先校验主题/字体标识，防止超长异常值导致容量清理死循环；新增回归用例。
-- 使用用户已有package-lock.json；GitHub Actions安装方式改为npm ci。
-- README删去上一轮“正式构建未验证”的过期说明，记录实际结果与未执行项。
+依赖树为 `vitest@3.2.7 → @vitest/mocker@3.2.7 / tinypool@1.1.1`。mocker为moderate，tinypool为critical，Vitest父节点汇总为critical。报告的修复均指向Vitest 5.0.4且标记isSemVerMajor=true；没有提供现用3.x内的修复。风险保留在本地/CI开发测试环境，未传播到时钟应用产物，不代表开发工具漏洞消失。
 
-## 本地依赖版本
+构建从Rollup实际模块清单检查排除 `vitest`、`@vitest/mocker`、`tinypool`；Service Worker由Workbox生成，无测试工具入口。实际浏览器辅助包清单如下：
 
-- typescript: 5.9.3
-- vite: 7.3.7
-- vitest: 3.2.7
-- vite-plugin-pwa: 1.3.0
-- subset-font: 2.9.0
-- @vite-pwa/assets-generator: 1.0.4
+- workbox-window
 
-## 尚需用户操作
+本次共61个模块。机器可读清单为 `artifacts/bundle-modules.json`，目录被Git忽略，每次构建重新生成。将测试工具意外引入生产模块会使构建失败。
 
-准确的npm审计必须联网，而本轮禁止联网。请在本项目终端运行：
+## 后续设备验收和提交
+
+按README及SPEC 16.2进行iPhone状态栏安全区、主题、睡眠、离线和流畅度验收。iPhone Safari无Battery Status API，应无应用内电量或占位；支持该接口的浏览器应显示电池、充电闪电及可选百分比。
+
+本轮不需要联网安装来完成电量功能。若以后选择升级Vitest主版本，再由用户安装并验证兼容性；本轮保持锁文件不变。
+
+用户可在项目根目录执行：
 
 ```sh
-npm audit --json > audit-report.json
-```
-
-发现漏洞时npm可能返回非零退出码，JSON文件仍会产生。获得包名、公告、依赖路径及修复版本后，才能判断是否进入最终产物和选择兼容升级；未使用 `npm audit fix --force`。
-
-Git元数据写入目前被环境拒绝。请在允许写入本项目.git的终端完成源码提交：
-
-```sh
-git init -b main
 git add .
-git commit -m "Implement Desk Clock PWA and verify resource budgets"
+git commit -m "Add battery display and document development-only audit findings"
 ```
-
-npm审计日志/缓存、审计报告、node_modules及dist已排除在Git跟踪之外；源码、package-lock、生成字体/图标/许可证和预算记录应一并提交。没有生成或读取项目外的临时仓库或bundle。

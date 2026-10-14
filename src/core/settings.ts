@@ -7,7 +7,7 @@ export interface Settings {
   v: number; lang: 'zh' | 'en'; theme: string; clock: ClockKind; anim: AnimKind;
   analogMotion: 'sweep' | 'tick'; font: string | null;
   custom: Record<Mode, Partial<Record<'bg' | 'card' | 'digit', string>>>;
-  show: { seconds: boolean; h12: boolean; year: boolean; month: boolean; day: boolean; weekday: boolean; quote: boolean };
+  show: { seconds: boolean; h12: boolean; year: boolean; month: boolean; day: boolean; weekday: boolean; quote: boolean; battery: boolean; batteryPercent: boolean };
   tz: string | null;
   appearance: { mode: 'system' | 'schedule' | Mode; dayAt: string; nightAt: string };
   sleep: { on: boolean; from: string; to: string; dim: number; red: boolean };
@@ -16,7 +16,7 @@ export interface Settings {
 }
 export const defaults: Settings = {
   v: 1, lang: 'zh', theme: 'pure', clock: 'flip', anim: 'flip', analogMotion: 'sweep', font: null,
-  custom: { day: {}, night: {} }, show: { seconds: true, h12: false, year: true, month: true, day: true, weekday: true, quote: true },
+  custom: { day: {}, night: {} }, show: { seconds: true, h12: false, year: true, month: true, day: true, weekday: true, quote: true, battery: true, batteryPercent: false },
   tz: null, appearance: { mode: 'system', dayAt: '07:00', nightAt: '19:00' }, sleep: { on: false, from: '23:00', to: '07:00', dim: 0.7, red: false },
   quote: { mode: 'rotate', every: 30, source: 'preset', size: 'm', custom: [] }, wakeLock: true, burnIn: true
 };
