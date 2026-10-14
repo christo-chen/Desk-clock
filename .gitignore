@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.DS_Store
+artifacts/
+playwright-report/
+test-results/
+.npm-cache/
+.npm-logs/
+audit-report.json

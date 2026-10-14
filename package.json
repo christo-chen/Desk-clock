@@ -1,0 +1,40 @@
+{
+  "name": "desk-clock",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "assets": "node scripts/subset-fonts.mjs && node scripts/gen-icons.mjs",
+    "build": "npm run assets && tsc --noEmit && vite build && node scripts/check-budget.mjs",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:browser": "node scripts/browser-test.mjs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.4",
+    "vite-plugin-pwa": "^1.0.3",
+    "subset-font": "^2.4.0",
+    "@vite-pwa/assets-generator": "^1.0.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.18.0",
+    "dseg": "^0.46.0",
+    "@fontsource/bebas-neue": "^5.2.0",
+    "@fontsource/big-shoulders-display": "^5.2.0",
+    "@fontsource/orbitron": "^5.2.0",
+    "@fontsource/share-tech-mono": "^5.2.0",
+    "@fontsource/vt323": "^5.2.0",
+    "@fontsource/press-start-2p": "^5.2.0",
+    "@fontsource/major-mono-display": "^5.2.0",
+    "@fontsource/monoton": "^5.2.0",
+    "@fontsource/chakra-petch": "^5.2.0",
+    "@fontsource/jost": "^5.2.0",
+    "@fontsource/dm-serif-display": "^5.2.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
