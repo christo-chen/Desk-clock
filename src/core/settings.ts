@@ -3,6 +3,7 @@ import { fonts } from '../data/fonts';
 export type ClockKind = 'flip' | 'segment' | 'dotmatrix' | 'minimal' | 'nixie' | 'analog';
 export type AnimKind = 'flip' | 'pixel' | 'drop' | 'scale' | 'evaporate' | 'none';
 export type Mode = 'day' | 'night';
+export type ForceLandscape = 'off' | 'left' | 'right';
 export interface Settings {
   v: number; lang: 'zh' | 'en'; theme: string; clock: ClockKind; anim: AnimKind;
   analogMotion: 'sweep' | 'tick'; font: string | null;
@@ -12,13 +13,13 @@ export interface Settings {
   appearance: { mode: 'system' | 'schedule' | Mode; dayAt: string; nightAt: string };
   sleep: { on: boolean; from: string; to: string; dim: number; red: boolean };
   quote: { mode: 'fixed' | 'rotate' | 'daily'; every: number; source: 'preset' | 'custom' | 'mixed'; size: 's' | 'm' | 'l'; custom: string[]; fixed?: number };
-  wakeLock: boolean; burnIn: boolean; installDismissed?: boolean;
+  wakeLock: boolean; burnIn: boolean; forceLandscape: ForceLandscape; installDismissed?: boolean;
 }
 export const defaults: Settings = {
   v: 1, lang: 'zh', theme: 'pure', clock: 'flip', anim: 'flip', analogMotion: 'sweep', font: null,
   custom: { day: {}, night: {} }, show: { seconds: true, h12: false, year: true, month: true, day: true, weekday: true, quote: true, battery: true, batteryPercent: false },
   tz: null, appearance: { mode: 'system', dayAt: '07:00', nightAt: '19:00' }, sleep: { on: false, from: '23:00', to: '07:00', dim: 0.7, red: false },
-  quote: { mode: 'rotate', every: 30, source: 'preset', size: 'm', custom: [] }, wakeLock: true, burnIn: true
+  quote: { mode: 'rotate', every: 30, source: 'preset', size: 'm', custom: [] }, wakeLock: true, burnIn: true, forceLandscape: 'left'
 };
 export const settingsBytes = (s: Settings) => new TextEncoder().encode(JSON.stringify(s)).length;
 function merge(base: unknown, raw: unknown): any {
@@ -41,6 +42,7 @@ export function migrateSettings(raw: unknown): Settings {
   if (!fonts.some(([id]) => id === s.font)) s.font = null;
   const valid = (v: string, values: string[], fallback: string) => values.includes(v) ? v : fallback;
   s.lang = valid(s.lang, ['zh','en'], 'zh') as Settings['lang'];
+  s.forceLandscape = valid(s.forceLandscape, ['off','left','right'], 'left') as ForceLandscape;
   s.clock = valid(s.clock, ['flip','segment','dotmatrix','minimal','nixie','analog'], 'flip') as ClockKind;
   s.anim = valid(s.anim, ['flip','pixel','drop','scale','evaporate','none'], 'flip') as AnimKind;
   s.analogMotion = s.analogMotion === 'tick' ? 'tick' : 'sweep';

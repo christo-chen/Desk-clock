@@ -8,7 +8,7 @@ const themes=['pure','bauhaus','nixie','split-flap','polar','phosphor','synthwav
 const clocks=['flip','segment','dotmatrix','minimal','nixie','analog'];
 async function open(settings,viewport,params=''){
  const context=await browser.newContext({viewport,isMobile:true,hasTouch:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 Version/18.4 Mobile/15E148 Safari/604.1'});
- await context.addInitScript(value=>localStorage.setItem('deskclock:v1',JSON.stringify(value)),{v:1,installDismissed:true,wakeLock:false,burnIn:false,...settings});
+ await context.addInitScript(value=>localStorage.setItem('deskclock:v1',JSON.stringify(value)),{v:1,installDismissed:true,wakeLock:false,burnIn:false,forceLandscape:'off',...settings});
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(base+params);await page.waitForSelector('.clock-group,.dial');await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(1250);return {context,page};
 }
 try {
