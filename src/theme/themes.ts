@@ -352,6 +352,94 @@ export const themes: Theme[] = [
       "muted": "#908CAA",
       "accent": "#C4A7E7"
     }
+  },
+  {
+    "id": "chrono",
+    "zh": "时序局",
+    "en": "Chrono Bureau",
+    "style": "retro",
+    "font": "michroma",
+    "effect": "chrono",
+    "day": {
+      "bg": "#E7DCC6",
+      "card": "#C9622A",
+      "digit": "#FBF3E2",
+      "muted": "#6E5A43",
+      "accent": "#7C7E1E"
+    },
+    "night": {
+      "bg": "#1D1B17",
+      "card": "#33291F",
+      "digit": "#EBDDBF",
+      "muted": "#C97A3C",
+      "accent": "#A7A93C"
+    }
+  },
+  {
+    "id": "rainfall",
+    "zh": "雨幕",
+    "en": "Rainfall",
+    "style": "art",
+    "font": "bebas-neue",
+    "effect": "rain",
+    "day": {
+      "bg": "#C9D0D6",
+      "card": "#DDE3E8",
+      "digit": "#2B3A48",
+      "muted": "#4E5B67",
+      "accent": "#8A6A3A"
+    },
+    "night": {
+      "bg": "#121820",
+      "card": "#0B1016",
+      "digit": "#DCE6EE",
+      "muted": "#7D8B99",
+      "accent": "#C9A15B"
+    }
+  },
+  {
+    "id": "realm",
+    "zh": "王国",
+    "en": "Realm",
+    "style": "epic",
+    "font": "cinzel",
+    "effect": "realm",
+    "day": {
+      "bg": "#E9DDC2",
+      "card": "#F3EAD5",
+      "digit": "#3A2A1A",
+      "muted": "#6E5B42",
+      "accent": "#8B2A2A"
+    },
+    "night": {
+      "bg": "#16130F",
+      "card": "#241C14",
+      "digit": "#C9A45C",
+      "muted": "#8C7A5E",
+      "accent": "#A33A32"
+    }
+  },
+  {
+    "id": "hellas",
+    "zh": "古希腊",
+    "en": "Hellas",
+    "style": "epic",
+    "font": "marcellus",
+    "effect": "hellas",
+    "day": {
+      "bg": "#EAE3D6",
+      "card": "#C8693E",
+      "digit": "#1C1511",
+      "muted": "#665848",
+      "accent": "#2F5D8A"
+    },
+    "night": {
+      "bg": "#0F1A2B",
+      "card": "#16243A",
+      "digit": "#E8DCC4",
+      "muted": "#8A9AB0",
+      "accent": "#D27A4E"
+    }
   }
 ];
 export const nightVision: Colors = {bg:"#000000",card:"#050000",digit:"#8B1A1A",muted:"#4A1010",accent:"#8B1A1A"};

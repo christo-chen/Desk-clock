@@ -4,6 +4,7 @@ export type ClockKind = 'flip' | 'segment' | 'dotmatrix' | 'minimal' | 'nixie' |
 export type AnimKind = 'flip' | 'pixel' | 'drop' | 'scale' | 'evaporate' | 'none';
 export type Mode = 'day' | 'night';
 export type ForceLandscape = 'off' | 'left' | 'right';
+export interface CustomQuote { text: string; author: string }
 export interface Settings {
   v: number; lang: 'zh' | 'en'; theme: string; clock: ClockKind; anim: AnimKind;
   analogMotion: 'sweep' | 'tick'; font: string | null;
@@ -12,14 +13,14 @@ export interface Settings {
   tz: string | null;
   appearance: { mode: 'system' | 'schedule' | Mode; dayAt: string; nightAt: string };
   sleep: { on: boolean; from: string; to: string; dim: number; red: boolean };
-  quote: { mode: 'fixed' | 'rotate' | 'daily'; every: number; source: 'preset' | 'custom' | 'mixed'; size: 's' | 'm' | 'l'; custom: string[]; fixed?: number };
-  wakeLock: boolean; burnIn: boolean; forceLandscape: ForceLandscape; installDismissed?: boolean;
+  quote: { mode: 'fixed' | 'rotate' | 'daily'; every: number; source: 'preset' | 'custom' | 'mixed'; size: 's' | 'm' | 'l'; lang: 'en' | 'zh'; custom: CustomQuote[]; fixed?: number };
+  wakeLock: boolean; burnIn: boolean; themeMotion: boolean; forceLandscape: ForceLandscape; installDismissed?: boolean;
 }
 export const defaults: Settings = {
   v: 1, lang: 'zh', theme: 'pure', clock: 'flip', anim: 'flip', analogMotion: 'sweep', font: null,
   custom: { day: {}, night: {} }, show: { seconds: true, h12: false, year: true, month: true, day: true, weekday: true, quote: true, battery: true, batteryPercent: false },
   tz: null, appearance: { mode: 'system', dayAt: '07:00', nightAt: '19:00' }, sleep: { on: false, from: '23:00', to: '07:00', dim: 0.7, red: false },
-  quote: { mode: 'rotate', every: 30, source: 'preset', size: 'm', custom: [] }, wakeLock: true, burnIn: true, forceLandscape: 'left'
+  quote: { mode: 'rotate', every: 30, source: 'preset', size: 'm', lang: 'en', custom: [] }, wakeLock: true, burnIn: true, themeMotion: true, forceLandscape: 'left'
 };
 export const settingsBytes = (s: Settings) => new TextEncoder().encode(JSON.stringify(s)).length;
 function merge(base: unknown, raw: unknown): any {
@@ -50,6 +51,7 @@ export function migrateSettings(raw: unknown): Settings {
   s.quote.mode = valid(s.quote.mode, ['fixed','rotate','daily'], 'rotate') as Settings['quote']['mode'];
   s.quote.source = valid(s.quote.source, ['preset','custom','mixed'], 'preset') as Settings['quote']['source'];
   s.quote.size = valid(s.quote.size, ['s','m','l'], 'm') as Settings['quote']['size'];
+  s.quote.lang = valid(s.quote.lang, ['en','zh'], 'en') as Settings['quote']['lang'];
   if (![5,15,30,60].includes(s.quote.every)) s.quote.every = 30;
   s.sleep.dim = Number.isFinite(s.sleep.dim) ? Math.max(0, Math.min(.85, s.sleep.dim)) : .7;
   for (const [obj, key, fallback] of [[s.appearance,'dayAt','07:00'],[s.appearance,'nightAt','19:00'],[s.sleep,'from','23:00'],[s.sleep,'to','07:00']] as const) {
@@ -60,7 +62,11 @@ export function migrateSettings(raw: unknown): Settings {
     if (typeof color === 'string' && /^#[\da-f]{6}$/i.test(color)) s.custom[mode][key] = color.toUpperCase();
   }
   if (s.tz) try { new Intl.DateTimeFormat('en', {timeZone: s.tz}); } catch { s.tz = null; }
-  s.quote.custom = s.quote.custom.filter(x => typeof x === 'string' && x.trim()).map(x => Array.from(x.trim()).slice(0,120).join('')).slice(0,40);
+  const items: unknown[] = s.quote.custom;
+  s.quote.custom = items.map(item => {
+    const raw = typeof item === 'string' ? { text: item, author: '' } : item as Partial<CustomQuote> | null;
+    return { text: typeof raw?.text === 'string' ? Array.from(raw.text.trim()).slice(0,120).join('') : '', author: typeof raw?.author === 'string' ? Array.from(raw.author.trim()).slice(0,40).join('') : '' };
+  }).filter(q => q.text).slice(0,40);
   if (Number.isInteger(r.quote?.fixed) && r.quote.fixed >= 0) s.quote.fixed = r.quote.fixed;
   if (r.installDismissed === true) s.installDismissed = true;
   while (settingsBytes(s) > 8192) s.quote.custom.pop();

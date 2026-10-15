@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { Blob, Face, Font } from 'harfbuzzjs';
-import { fonts } from '../src/data/fonts';
+import { fonts, fontScale } from '../src/data/fonts';
+import widths from '../src/assets/font-widths.json';
 const fontverter = createRequire(import.meta.url)('fontverter') as {
   convert: (buffer: Buffer, format: string) => Promise<Buffer>;
 };
@@ -15,6 +16,10 @@ describe('裁剪字体与许可证产物', () => {
     const face = new Face(new Blob(sfnt));
     const font = new Font(face);
     for (const digit of '0123456789') expect(font.nominalGlyph(digit.codePointAt(0)!)).toBeGreaterThan(0);
+    const advance = Math.max(...Array.from('0123456789', c => font.glyphHAdvance(font.nominalGlyph(c.codePointAt(0)!)!))) / face.upem;
+    expect(widths[id]).toBeCloseTo(advance, 6);
+    // Flip half-cards have a 44% digit cell within a 1.29 × height group.
+    expect(advance * fontScale(id)).toBeLessThanOrEqual(1.29 * .44);
     const allowed = new Set(Array.from('0123456789:. AMP', c => c.codePointAt(0)!));
     expect(Array.from(face.collectUnicodes()).every(c => allowed.has(c))).toBe(true);
     expect(readFileSync(`public/licenses/${id}.txt`, 'utf8')).toMatch(/SIL OPEN FONT LICENSE/i);
@@ -24,7 +29,7 @@ describe('裁剪字体与许可证产物', () => {
     expect(readFileSync('public/licenses/dseg.txt')).toEqual(readFileSync('node_modules/dseg/DSEG-LICENSE.txt'));
   });
 
-  it('12款字体合计不超过150 KB', () => {
+  it('15款字体合计不超过150 KB', () => {
     const total = fonts.reduce((n, [id]) => n + readFileSync(`src/assets/fonts/${id}.woff2`).byteLength, 0);
     expect(total).toBeLessThanOrEqual(150 * 1024);
   });

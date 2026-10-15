@@ -1,5 +1,11 @@
 import {quotes} from '../data/quotes';import type {Settings} from './settings';
-export function quotePool(s:Settings) {const preset=quotes.map(q=>({text:q[s.lang],source:q.source})),custom=s.quote.custom.map(text=>({text,source:''}));return s.quote.source==='preset'?preset:s.quote.source==='custom'?custom:[...preset,...custom];}
+export interface Quote { text: string; source: string }
+export function quotePool(s:Settings): Quote[] {
+ const lang=s.quote.lang;
+ const preset=quotes.map(q=>({text:q[lang],source:lang==='en'?`— ${q.sourceEn}`:`——${q.source}`}));
+ const custom=s.quote.custom.map(q=>({text:q.text,source:q.author?(lang==='en'?`— ${q.author}`:`——${q.author}`):''}));
+ return s.quote.source==='preset'?preset:s.quote.source==='custom'?custom:[...preset,...custom];
+}
 const dateFormats=new Map<string,Intl.DateTimeFormat>();
 export function quoteIndex(s:Settings,now:number,length:number) {
  if(!length)return 0;

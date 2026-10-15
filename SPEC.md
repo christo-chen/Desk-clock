@@ -1,18 +1,23 @@
-# 桌面时钟 Desk Clock：最终方案与实现规格 v1.2
+# 桌面时钟 Desk Clock：最终方案与实现规格 v1.3
 
 > 本文件是实现规格。实现者（Codex）应完整阅读后一次性实现全部功能。遇到本文未写明的细节，按“简单、免费、美观、省资源”的原则自行决定，不要停下来提问。
 
 ## 0. 本版相对上一版的改动
 
+- 语录采用固定占位，开关、长短、字号不影响时钟；语录语言独立于界面，默认English，显示双语署名；自定义语录可填写作者。
+- 新增时序局、雨幕、王国、古希腊，共20套/40种日夜配色；新增史诗分类和Michroma、Cinzel、Marcellus，字体共15款。
+- 设置面板支持默认/90%展开两档、横条轻点切换及拖动吸附；主题/时钟/字体卡片网格换行。
+- Wake Lock只在用户点击事件中同步请求；状态及失败原因仅在通用页显示，不在主界面弹出提示。
+
 - 移除主界面主题快捷按钮；设置每次默认打开「主题皮肤」。新增默认向左横放的「强制横屏」及条件显示的旋转按钮，适配 iPhone 旋转锁定。
 - 增加日期行右侧的电量图标与可选百分比；使用 Battery Status API 事件更新，不支持该接口的设备（包括 iPhone Safari）完全不渲染电量组件。
 - 以 iPhone 为唯一主要目标；Android 只做“能用就行”的顺带兼容，不做专门测试，不出安装包。
 - 默认主题改为最朴素的黑白配「纯粹」，其他主题由用户自己去主题皮肤里换。
-- 主题从 12 套改为 16 套，分 8 种风格；复古、科技、赛博朋克各保留 2 套，新增极简、自然、柔和、东方、文艺 4 种风格。
+- 主题现有 20 套，分极简、复古、科技、赛博朋克、自然、柔和、东方、文艺、史诗9种风格。
 - 每套主题都有日间和夜间两种配色，并新增外观模式自动切换、颜色平滑过渡、睡眠模式、按日夜分别保存自定义配色。
 - 时钟种类从 4 种增加到 6 种：新增辉光管和极简指针。
-- 字体从 10 款增加到 12 款，新增几何无衬线 Jost 和衬线体 DM Serif Display，用于极简、东方和文艺主题。
-- 语录改为以欧洲文学和哲学为主：欧洲 30 条，中国古代 6 条，全部中英双语。
+- 字体现有 15 款，新增几何无衬线 Jost 和衬线体 DM Serif Display，用于极简、东方和文艺主题。
+- 语录改为以欧洲文学和哲学为主：欧洲 30 条，中国古代 6 条，全部中英双语，语录语言独立设置（默认English）。
 - 界面中英双语，可切换，默认中文。
 - 取消分阶段开发，改为一次性交付；增加内存与存储预算、Codex 自测要求和你在 iPhone 上的验收清单。
 
@@ -35,7 +40,7 @@
 | iOS 版本 | 支持情况 |
 |---|---|
 | 18.4 及以上（含 iOS 26） | 完整支持，推荐。主屏幕应用里的屏幕常亮接口在 18.4 才被苹果修复。 |
-| 16.4 至 18.3 | 可以运行。屏幕常亮可能失效，首次打开时提示用户把「设置 > 显示与亮度 > 自动锁定」设为「永不」。 |
+| 16.4 至 18.3 | 可以运行。屏幕常亮可能失效，在用户轻点后尝试请求；状态与失败原因只在「通用」页显示，不在主界面提示。 |
 | 低于 16.4 | 不支持，显示一句提示。 |
 
 其他依赖的浏览器能力都做特性检测并提供降级：CSS linear() 缓动（Safari 17.2 起支持，不支持时用 cubic-bezier 代替）、@property 颜色过渡（16.4 起）、oklch 颜色（15.4 起）。
@@ -62,12 +67,12 @@
 | 底部语录 | 可选 | 显示 | 预设 36 条 + 用户自定义 |
 | 时钟种类 | — | 翻页卡片 | 6 种，见第 5 节 |
 | 动画 | — | 翻页 | 6 种（含无动画），见第 6 节 |
-| 主题皮肤 | — | 纯粹（黑白） | 16 套，每套含日间和夜间配色，见第 7 节 |
+| 主题皮肤 | — | 纯粹（黑白） | 20 套，每套含日间和夜间配色，见第 7 节 |
 | 外观模式 | — | 跟随系统 | 跟随系统 / 定时 / 始终日间 / 始终夜间，见第 8 节 |
 | 强制横屏 | — | 向左横放 | 关闭 / 向左横放 / 向右横放；仅竖屏视口时旋转整个应用，见 4.6 |
 | 睡眠模式 | 可选 | 关 | 定时调暗、红色夜视，见第 8 节 |
 | 背景、字体颜色、蒙版 | — | 跟随主题 | 自定义色板与自由取色，日夜分别保存，见第 9 节 |
-| 字体 | — | 跟随主题 | 12 款免费字体，见第 10 节 |
+| 字体 | — | 跟随主题 | 15 款免费字体，见第 10 节 |
 | 界面语言 | — | 中文 | 中文 / English |
 | 时区 | — | 跟随系统 | 可手动指定 |
 | 屏幕常亮 | 可选 | 开 | 见 2.2 |
@@ -87,22 +92,22 @@
 
 ### 4.2 设置面板
 
-从底部滑出的半透明面板，背景是毛玻璃模糊，能透过面板实时看到时钟的变化。日间用浅色面板，夜间用深色面板。面板高度约为屏幕的 45%（横屏）或 55%（竖屏）。
+从底部滑出的半透明面板，背景是毛玻璃模糊，能透过面板实时看到时钟的变化。日间用浅色面板，夜间用深色面板。默认档保持屏幕45%（横屏）或55%（竖屏，常规视口最小180px）；展开档约为避开顶部安全区后可用高度的90%，顶部仍露出一小条时钟。横条向上拉展开、向下拉回默认，默认档继续下拉可关闭。轻点横条或键盘激活也切换两档；按位置和速度吸附，展开档一次下拉不跨过默认直接关闭。同次打开切标签保留档位，关闭后再打开恢复默认。内容区纵向滚动，主题/时钟/字体卡片自动换行网格。强制横屏继续使用应用坐标。
 
-顶部是可横向滑动的标签栏，选中项下方有一条会滑动的下划线。共 10 个标签：
+顶部是可横向滑动的标签栏，选中项下方有一条会滑动的下划线。共 10 个标签，每次打开默认选中主题皮肤：
 
 | 标签 | 内容 |
 |---|---|
-| 主题皮肤 | 风格筛选（全部 / 极简 / 复古 / 科技 / 赛博朋克 / 自然 / 柔和 / 东方 / 文艺）+ 主题卡片横向列表。每张卡片用纯 CSS 画出“12:34”的迷你预览，左上半是日间配色、右下半是夜间配色。点一下立即应用。 |
+| 主题皮肤 | 风格筛选（全部 / 极简 / 复古 / 科技 / 赛博朋克 / 自然 / 柔和 / 东方 / 文艺 / 史诗）+ 主题卡片自动换行网格。每张卡片用纯 CSS 画出“12:34”的迷你预览，左上半是日间配色、右下半是夜间配色。点一下立即应用。 |
 | 时钟 | 6 种时钟种类卡片，带静态迷你预览。指针时钟下方额外显示「平滑扫秒 / 跳秒」选项。 |
 | 动画 | 6 个选项。点选后，时钟当前的秒数立即演示一次该动画，不用等下一秒。 |
-| 字体 | 12 款字体，每款以“12:34”预览。当前时钟种类不使用字体时（数码管、点阵、指针），显示一行说明。 |
+| 字体 | 15 款字体，每款以“12:34”预览。当前时钟种类不使用字体时（数码管、点阵、指针），显示一行说明。 |
 | 背景 | 色板 + 推荐色 + 自由取色，见第 9 节。 |
 | 字体颜色 | 同上。 |
 | 蒙版 | 同上（蒙版即数字背后的卡片颜色）。 |
 | 显示 | 开关：秒、12 小时制、年、月、日、星期、语录、显示电量（默认开）、显示电量百分比（默认关）；时区选择。 |
-| 语录 | 显示方式、轮换间隔、来源、自定义语录编辑，见第 12 节。 |
-| 通用 | 语言、强制横屏（关闭 / 向左横放 / 向右横放，默认向左横放）、外观模式、睡眠模式、屏幕常亮、防烧屏、恢复默认、关于（版本号、字体与配色致谢）。 |
+| 语录 | 语录语言（English / 中文，默认English）、显示方式、轮换间隔、来源、自定义语录及可选作者编辑，见第12节。 |
+| 通用 | 语言、强制横屏（关闭 / 向左横放 / 向右横放，默认向左横放）、外观模式、睡眠模式、主题动态特效（默认开启）、屏幕常亮及当前状态、防烧屏、恢复默认、关于（版本号、字体与配色致谢）。 |
 
 ### 4.3 动效与手感
 
@@ -175,7 +180,7 @@
 - 页面切到后台时不排任何动画；回到前台时直接显示当前时间，不补播错过的动画。
 - 开启「减弱动态效果」时，所有动画改为 150 ms 的淡入淡出。
 
-## 7. 主题皮肤（16 套，每套含日间 + 夜间）
+## 7. 主题皮肤（20 套，每套含日间 + 夜间）
 
 主题皮肤是搭配好的整套方案。应用一个主题会同时设置：日间配色、夜间配色、推荐字体、特效。时钟种类和动画不受主题影响，由用户单独选择。应用主题会清除之前的自定义颜色。
 
@@ -183,7 +188,7 @@
 
 每套配色有 5 个颜色：背景、蒙版（卡片）、数字、辅助文字（日期和语录）、强调色（指针秒针、选中状态等）。数码管鬼影、点阵暗点等由数字颜色按透明度自动派生。
 
-**配色校验**：所有 32 套配色都满足“数字对卡片”和“辅助文字对背景”的对比度不低于 3:1（WCAG 大号文字标准），由单元测试自动检查。
+**配色校验**：所有 40 套配色都满足“数字对卡片”和“辅助文字对背景”的对比度不低于 3:1（WCAG 大号文字标准），由单元测试自动检查。
 
 ### 7.1 主题列表
 
@@ -205,8 +210,14 @@
 | 东方 | 浮世绘 / Ukiyo-e | Big Shoulders Display | 无 | Kanagawa 配色 Wave / Lotus（MIT），灵感来自北斋《神奈川冲浪里》 |
 | 文艺 | 墨水屏 / E-ink | DM Serif Display | 纸纹 | 电子书阅读器的米黄纸色 |
 | 文艺 | 晨曦玫瑰 / Rosé | DM Serif Display | 无 | Rosé Pine 配色 Main / Dawn（MIT） |
+| 复古 | 时序局 / Chrono Bureau | Michroma | 夜间扫描线 + 极轻暖色辉光 | 《洛基》时间管理局的世纪中期复古未来风格 |
+| 文艺 | 雨幕 / Rainfall | Bebas Neue | 雨丝 | 老电影中的雨夜城市 |
+| 史诗 | 王国 / Realm | Cinzel | 日间纸纹 / 夜间暖色暗角 | 西方中世纪奇幻史诗 |
+| 史诗 | 古希腊 / Hellas | Marcellus | 日间纸纹 | 黑绘陶器 / 爱琴海夜色 |
 
 特效说明：辉光是在数字周围叠两层同色的静态阴影；扫描线是一层 2 像素间隔、6% 透明度的横线；纸纹是一张 64×64 像素、由代码生成的噪点纹理，以 4% 透明度平铺。辉光和扫描线在日间配色下自动关闭，因为它们在浅色背景上会显得脏。
+
+新增特效：时序局仅夜间有扫描线和极轻暖色静态辉光；王国日间纸纹、夜间四周极淡的暖色暗角；古希腊仅日间纸纹。雨幕在启动时用离屏Canvas生成128×256细斜线平铺纹理，位于时钟后方，日间透明度6%、夜间12%；只通过CSS transform每3秒移动一个纹理周期，不使用常驻requestAnimationFrame。睡眠、减弱动态效果、页面不可见或通用页「主题动态特效」关闭时，暂停在当前帧并保留静态纹理。主题动态特效默认开启。
 
 ### 7.2 配色表
 
@@ -244,6 +255,14 @@
 |  | 夜间 | `#1A1814` | `#221F1A` | `#CFC3AA` | `#8A7F6C` | `#CFC3AA` |
 | 晨曦玫瑰 | 日间 | `#FAF4ED` | `#FFFAF3` | `#B4637A` | `#797593` | `#907AA9` |
 |  | 夜间 | `#191724` | `#1F1D2E` | `#EBBCBA` | `#908CAA` | `#C4A7E7` |
+| 时序局 | 日间 | `#E7DCC6` | `#C9622A` | `#FBF3E2` | `#6E5A43` | `#7C7E1E` |
+|  | 夜间 | `#1D1B17` | `#33291F` | `#EBDDBF` | `#C97A3C` | `#A7A93C` |
+| 雨幕 | 日间 | `#C9D0D6` | `#DDE3E8` | `#2B3A48` | `#4E5B67` | `#8A6A3A` |
+|  | 夜间 | `#121820` | `#0B1016` | `#DCE6EE` | `#7D8B99` | `#C9A15B` |
+| 王国 | 日间 | `#E9DDC2` | `#F3EAD5` | `#3A2A1A` | `#6E5B42` | `#8B2A2A` |
+|  | 夜间 | `#16130F` | `#241C14` | `#C9A45C` | `#8C7A5E` | `#A33A32` |
+| 古希腊 | 日间 | `#EAE3D6` | `#C8693E` | `#1C1511` | `#665848` | `#2F5D8A` |
+|  | 夜间 | `#0F1A2B` | `#16243A` | `#E8DCC4` | `#8A9AB0` | `#D27A4E` |
 
 **关于名称与授权**：标注 MIT 的配色来自对应的开源主题项目，App 内使用自己的中英文名称，并在「关于」页面致谢原项目。中国传统色取自开源数据集 chinese-colors 中的玄青、月白、象牙白、墨色、胭脂等，为保证屏幕对比度做了少量调整。
 
@@ -296,7 +315,7 @@
 - **对比度提示**：色板下方实时显示“数字对蒙版”的对比度。低于 3:1 时显示黄色提示“数字可能看不清”。
 - **当前选中**：选中的色块显示对勾，下方显示颜色的十六进制值。
 
-## 10. 字体（12 款）
+## 10. 字体（15 款）
 
 全部为 SIL Open Font License 1.1 授权，可免费使用和随应用分发。字体从 npm 包获取（Fontsource 和 dseg），构建时用脚本只保留时钟用到的字符（0-9、冒号、句点、空格、A、M、P），每款压缩到几 KB。
 
@@ -314,8 +333,11 @@
 | 10 | Chakra Petch | @fontsource/chakra-petch | 切角未来感 | 霓虹夜城 |
 | 11 | Jost | @fontsource/jost | 几何无衬线（包豪斯） | 包豪斯、森林、拿铁与摩卡 |
 | 12 | DM Serif Display | @fontsource/dm-serif-display | 高对比衬线 | 水墨、墨水屏、晨曦玫瑰 |
+| 13 | Michroma | @fontsource/michroma | 宽几何无衬线 | 时序局 |
+| 14 | Cinzel | @fontsource/cinzel | 古典碑铭衬线 | 王国 |
+| 15 | Marcellus | @fontsource/marcellus | 古典罗马衬线 | 古希腊 |
 
-只有当前使用的字体在启动时加载；字体标签页打开时再加载其余字体用于预览。全部字体会被离线缓存。
+构建时同时记录各字体最宽数字的字宽，渲染时以卡片容纳宽度限制字号，避免Michroma等宽字形被裁切。只有当前使用的字体在启动时加载；字体标签页打开时再加载其余字体用于预览。全部字体会被离线缓存。
 
 ## 11. 时间与日期
 
@@ -330,53 +352,53 @@
 
 ## 12. 底部语录
 
-- **预设 36 条**：欧洲文学与哲学 30 条，中国古代 6 条。每条都有中文和英文，按界面语言显示。
+- **预设 36 条**：欧洲文学与哲学 30 条，中国古代 6 条。每条都有中文和英文，按独立「语录语言」显示，默认English，与界面及系统语言无关。
 - **版权**：只收录早已进入公有领域的作者和作品。中文译文为本项目自译；英文为流传已久的公有领域译法或本项目的简短自译。
 - **显示方式**：固定一条 / 每隔 N 分钟轮换（5、15、30、60，默认 30）/ 每天一条。轮换时淡出旧句、淡入新句。
 - **来源**：仅预设 / 仅自定义 / 两者混合（默认仅预设，添加自定义语录后自动变为混合）。
-- **自定义**：可以添加、编辑、删除，单条最长 120 个字符，不区分语言，任何语言下都显示原文。
-- **样式**：字号小、中、大三档，颜色使用主题的辅助文字色。过长时自动缩小字号，最多显示两行。
+- **自定义**：可以添加、编辑、删除，正文最长120个Unicode字符，新增可选作者字段最长40个字符；正文和作者都不翻译。旧字符串数组迁移为 `{text, author:""}`，保留原文。作者为空时不显示署名，但仍保留署名占位。
+- **样式**：字号小、中、大三档，颜色使用主题的辅助文字色。正文最多两行，过长时自动缩小字号；下方预设署名为“— 作者, 作品”（英文）或“——作者《作品》”（中文），跟随语录语言，比正文小一档。中文保留原出处字段，第8条改为“苏格拉底，柏拉图《申辩篇》”。署名一行，过长省略号截断。区域高度始终保留为当前字号的正文两行+署名一行+4px间距，关闭/无语录时150ms淡出后visibility:hidden，不能display:none。主内容三轨网格采用minmax(0,1fr) / 时钟 / minmax(0,1fr)，时钟显式居中于第二轨；语录长短、轮换、开关、字号和署名有无不改变时钟位置，适用于原生竖屏、横屏和强制横屏。防烧屏微移仍独立按分钟工作。
 
 ### 12.1 预设语录
 
-| # | 中文 | English | 出处 |
-|---|---|---|---|
-| 1 | 不必再争论好人该是什么样，去做一个就是了。 | Waste no more time arguing what a good man should be. Be one. | 马可·奥勒留《沉思录》 |
-| 2 | 宇宙即变化，人生即看法。 | The universe is change; our life is what our thoughts make it. | 马可·奥勒留《沉思录》 |
-| 3 | 我们一再拖延，生命却在飞逝。 | While we are postponing, life speeds by. | 塞涅卡《道德书简》 |
-| 4 | 我们在想象中受的苦，多于在现实中。 | We suffer more often in imagination than in reality. | 塞涅卡《道德书简》 |
-| 5 | 先告诉自己你想成为什么样的人，然后去做你该做的事。 | First say to yourself what you would be; and then do what you have to do. | 爱比克泰德《语录》 |
-| 6 | 不能主宰自己的人，就不是自由的人。 | No man is free who is not master of himself. | 爱比克泰德 |
-| 7 | 人不能两次踏进同一条河流。 | No man ever steps in the same river twice. | 赫拉克利特 |
-| 8 | 未经审视的人生不值得过。 | The unexamined life is not worth living. | 柏拉图《申辩篇》 |
-| 9 | 一只燕子造不成春天，一天也不能。 | One swallow does not make a summer, nor does one day. | 亚里士多德《尼各马可伦理学》 |
-| 10 | 抓住今天，尽量少相信明天。 | Seize the day, and put as little trust as possible in tomorrow. | 贺拉斯《颂歌》 |
-| 11 | 时光飞逝，一去不返。 | Time flies, never to be regained. | 维吉尔《农事诗》 |
-| 12 | 滴水穿石。 | Dripping water hollows out stone. | 奥维德《黑海书简》 |
-| 13 | 你们生来不是为了像野兽一样活着，而是为了追求美德和知识。 | You were not made to live like brutes, but to follow virtue and knowledge. | 但丁《神曲·地狱篇》 |
-| 14 | 生命的价值不在于长短，而在于如何使用。 | The value of life lies not in the length of days, but in the use we make of them. | 蒙田《随笔集》 |
-| 15 | 读得多、走得多的人，见得多，也知道得多。 | He who reads much and walks much, sees much and knows much. | 塞万提斯《堂吉诃德》 |
-| 16 | 我们知道自己是什么，却不知道自己可能成为什么。 | We know what we are, but know not what we may be. | 莎士比亚《哈姆雷特》 |
-| 17 | 疑虑是叛徒，让我们因不敢尝试，而失去本可以得到的美好。 | Our doubts are traitors, and make us lose the good we oft might win by fearing to attempt. | 莎士比亚《一报还一报》 |
-| 18 | 有好的头脑还不够，重要的是好好运用它。 | It is not enough to have a good mind; the main thing is to use it well. | 笛卡尔《谈谈方法》 |
-| 19 | 人类的一切不幸都源于一件事：不懂得安静地待在房间里。 | All of humanity's problems stem from man's inability to sit quietly in a room alone. | 帕斯卡《思想录》 |
-| 20 | 一切美好的事物，既难得又稀少。 | All things excellent are as difficult as they are rare. | 斯宾诺莎《伦理学》 |
-| 21 | 我们得耕种自己的园地。 | We must cultivate our garden. | 伏尔泰《老实人》 |
-| 22 | 要有勇气运用你自己的理智。 | Have courage to use your own understanding. | 康德《什么是启蒙》 |
-| 23 | 知道还不够，必须应用；愿意还不够，必须行动。 | Knowing is not enough; we must apply. Willing is not enough; we must do. | 歌德《威廉·迈斯特的漫游时代》 |
-| 24 | 人生只能向后理解，但必须向前生活。 | Life can only be understood backwards; but it must be lived forwards. | 克尔凯郭尔《日记》 |
-| 25 | 知道为什么而活的人，几乎能忍受任何一种生活。 | He who has a why to live can bear almost any how. | 尼采《偶像的黄昏》 |
-| 26 | 最强大的两位战士，是耐心和时间。 | The strongest of all warriors are these two: time and patience. | 托尔斯泰《战争与和平》 |
-| 27 | 最重要的是，不要对自己撒谎。 | Above all, don't lie to yourself. | 陀思妥耶夫斯基《卡拉马佐夫兄弟》 |
-| 28 | 我们都身处阴沟，但仍有人在仰望星空。 | We are all in the gutter, but some of us are looking at the stars. | 王尔德《温德米尔夫人的扇子》 |
-| 29 | 对心中尚未解开的一切，要有耐心。 | Be patient toward all that is unsolved in your heart. | 里尔克《给青年诗人的信》 |
-| 30 | 真正的发现之旅，不在于寻找新的风景，而在于拥有新的眼光。 | The real voyage of discovery consists not in seeking new landscapes, but in having new eyes. | 普鲁斯特《追忆似水年华》 |
-| 31 | 千里之行，始于足下。 | A journey of a thousand miles begins with a single step. | 《老子》 |
-| 32 | 不积跬步，无以至千里。 | Without small steps, there is no journey of a thousand miles. | 《荀子·劝学》 |
-| 33 | 逝者如斯夫，不舍昼夜。 | Time flows on like this river, never ceasing day or night. | 《论语·子罕》 |
-| 34 | 盛年不重来，一日难再晨。 | The prime of life never comes twice; a day has but one morning. | 陶渊明《杂诗》 |
-| 35 | 吾生也有涯，而知也无涯。 | My life has a limit, but knowledge has none. | 《庄子·养生主》 |
-| 36 | 路漫漫其修远兮，吾将上下而求索。 | The road ahead is long and far; I will search high and low. | 屈原《离骚》 |
+| # | 中文 | English | 中文出处 | English attribution |
+|---|---|---|---|---|
+| 1 | 不必再争论好人该是什么样，去做一个就是了。 | Waste no more time arguing what a good man should be. Be one. | 马可·奥勒留《沉思录》 | Marcus Aurelius, Meditations |
+| 2 | 宇宙即变化，人生即看法。 | The universe is change; our life is what our thoughts make it. | 马可·奥勒留《沉思录》 | Marcus Aurelius, Meditations |
+| 3 | 我们一再拖延，生命却在飞逝。 | While we are postponing, life speeds by. | 塞涅卡《道德书简》 | Seneca, Letters to Lucilius |
+| 4 | 我们在想象中受的苦，多于在现实中。 | We suffer more often in imagination than in reality. | 塞涅卡《道德书简》 | Seneca, Letters to Lucilius |
+| 5 | 先告诉自己你想成为什么样的人，然后去做你该做的事。 | First say to yourself what you would be; and then do what you have to do. | 爱比克泰德《语录》 | Epictetus, Discourses |
+| 6 | 不能主宰自己的人，就不是自由的人。 | No man is free who is not master of himself. | 爱比克泰德 | Epictetus |
+| 7 | 人不能两次踏进同一条河流。 | No man ever steps in the same river twice. | 赫拉克利特 | Heraclitus |
+| 8 | 未经审视的人生不值得过。 | The unexamined life is not worth living. | 苏格拉底，柏拉图《申辩篇》 | Socrates, in Plato's Apology |
+| 9 | 一只燕子造不成春天，一天也不能。 | One swallow does not make a summer, nor does one day. | 亚里士多德《尼各马可伦理学》 | Aristotle, Nicomachean Ethics |
+| 10 | 抓住今天，尽量少相信明天。 | Seize the day, and put as little trust as possible in tomorrow. | 贺拉斯《颂歌》 | Horace, Odes |
+| 11 | 时光飞逝，一去不返。 | Time flies, never to be regained. | 维吉尔《农事诗》 | Virgil, Georgics |
+| 12 | 滴水穿石。 | Dripping water hollows out stone. | 奥维德《黑海书简》 | Ovid, Letters from Pontus |
+| 13 | 你们生来不是为了像野兽一样活着，而是为了追求美德和知识。 | You were not made to live like brutes, but to follow virtue and knowledge. | 但丁《神曲·地狱篇》 | Dante, Inferno |
+| 14 | 生命的价值不在于长短，而在于如何使用。 | The value of life lies not in the length of days, but in the use we make of them. | 蒙田《随笔集》 | Montaigne, Essays |
+| 15 | 读得多、走得多的人，见得多，也知道得多。 | He who reads much and walks much, sees much and knows much. | 塞万提斯《堂吉诃德》 | Cervantes, Don Quixote |
+| 16 | 我们知道自己是什么，却不知道自己可能成为什么。 | We know what we are, but know not what we may be. | 莎士比亚《哈姆雷特》 | Shakespeare, Hamlet |
+| 17 | 疑虑是叛徒，让我们因不敢尝试，而失去本可以得到的美好。 | Our doubts are traitors, and make us lose the good we oft might win by fearing to attempt. | 莎士比亚《一报还一报》 | Shakespeare, Measure for Measure |
+| 18 | 有好的头脑还不够，重要的是好好运用它。 | It is not enough to have a good mind; the main thing is to use it well. | 笛卡尔《谈谈方法》 | Descartes, Discourse on the Method |
+| 19 | 人类的一切不幸都源于一件事：不懂得安静地待在房间里。 | All of humanity's problems stem from man's inability to sit quietly in a room alone. | 帕斯卡《思想录》 | Pascal, Pensées |
+| 20 | 一切美好的事物，既难得又稀少。 | All things excellent are as difficult as they are rare. | 斯宾诺莎《伦理学》 | Spinoza, Ethics |
+| 21 | 我们得耕种自己的园地。 | We must cultivate our garden. | 伏尔泰《老实人》 | Voltaire, Candide |
+| 22 | 要有勇气运用你自己的理智。 | Have courage to use your own understanding. | 康德《什么是启蒙》 | Kant, What Is Enlightenment? |
+| 23 | 知道还不够，必须应用；愿意还不够，必须行动。 | Knowing is not enough; we must apply. Willing is not enough; we must do. | 歌德《威廉·迈斯特的漫游时代》 | Goethe, Wilhelm Meister's Journeyman Years |
+| 24 | 人生只能向后理解，但必须向前生活。 | Life can only be understood backwards; but it must be lived forwards. | 克尔凯郭尔《日记》 | Kierkegaard, Journals |
+| 25 | 知道为什么而活的人，几乎能忍受任何一种生活。 | He who has a why to live can bear almost any how. | 尼采《偶像的黄昏》 | Nietzsche, Twilight of the Idols |
+| 26 | 最强大的两位战士，是耐心和时间。 | The strongest of all warriors are these two: time and patience. | 托尔斯泰《战争与和平》 | Tolstoy, War and Peace |
+| 27 | 最重要的是，不要对自己撒谎。 | Above all, don't lie to yourself. | 陀思妥耶夫斯基《卡拉马佐夫兄弟》 | Dostoevsky, The Brothers Karamazov |
+| 28 | 我们都身处阴沟，但仍有人在仰望星空。 | We are all in the gutter, but some of us are looking at the stars. | 王尔德《温德米尔夫人的扇子》 | Oscar Wilde, Lady Windermere's Fan |
+| 29 | 对心中尚未解开的一切，要有耐心。 | Be patient toward all that is unsolved in your heart. | 里尔克《给青年诗人的信》 | Rilke, Letters to a Young Poet |
+| 30 | 真正的发现之旅，不在于寻找新的风景，而在于拥有新的眼光。 | The real voyage of discovery consists not in seeking new landscapes, but in having new eyes. | 普鲁斯特《追忆似水年华》 | Marcel Proust, In Search of Lost Time |
+| 31 | 千里之行，始于足下。 | A journey of a thousand miles begins with a single step. | 《老子》 | Laozi, Tao Te Ching |
+| 32 | 不积跬步，无以至千里。 | Without small steps, there is no journey of a thousand miles. | 《荀子·劝学》 | Xunzi, Encouraging Learning |
+| 33 | 逝者如斯夫，不舍昼夜。 | Time flows on like this river, never ceasing day or night. | 《论语·子罕》 | Confucius, Analects |
+| 34 | 盛年不重来，一日难再晨。 | The prime of life never comes twice; a day has but one morning. | 陶渊明《杂诗》 | Tao Yuanming, Miscellaneous Poems |
+| 35 | 吾生也有涯，而知也无涯。 | My life has a limit, but knowledge has none. | 《庄子·养生主》 | Zhuangzi |
+| 36 | 路漫漫其修远兮，吾将上下而求索。 | The road ahead is long and far; I will search high and low. | 屈原《离骚》 | Qu Yuan, Li Sao |
 
 ## 13. 性能与资源预算
 
@@ -466,14 +488,15 @@ interface DigitTransition {
   "tz": null,                         // null 表示跟随系统
   "appearance": { "mode": "system", "dayAt": "07:00", "nightAt": "19:00" },
   "sleep": { "on": false, "from": "23:00", "to": "07:00", "dim": 0.7, "red": false },
-  "quote": { "mode": "rotate", "every": 30, "source": "preset", "size": "m", "custom": [] },
+  "quote": { "mode": "rotate", "every": 30, "source": "preset", "size": "m", "lang": "en", "custom": [] },
   "wakeLock": true,
+  "themeMotion": true,               // 只控制主题的动态运动
   "burnIn": true,
   "forceLandscape": "left"            // off | left | right
 }
 ```
 
-保存在 localStorage 的 deskclock:v1 键下，修改后 300 ms 防抖写入。读取时与默认值深度合并，并按版本号迁移。
+保存在 localStorage 的 deskclock:v1 键下，修改后 300 ms 防抖写入。读取时与默认值深度合并，并按版本号迁移。语录新增lang默认en；custom存储{text,author}对象数组，兼容旧字符串；themeMotion缺省为true。
 新增电量项沿用版本 1；旧设置缺少 `show.battery` / `show.batteryPercent` 时分别合并为 `true` / `false`，用户已经保存的布尔值保持不变。
 强制横屏同样沿用版本1；旧设置缺少 `forceLandscape` 时合并为 `left`，已有的 `off` / `left` / `right` 保持不变，非法值回退为默认向左横放。
 
@@ -484,7 +507,7 @@ interface DigitTransition {
 - 尺寸使用 dvh / svh 单位和 env(safe-area-inset-*)，横屏时避开灵动岛。
 - 竖屏为系统状态栏留出顶部安全区和额外 16px 间距；Battery Status API 不支持时电量组件不渲染，不仿造系统电量。
 - iPhone 不允许网页真正锁定屏幕方向，使用4.6的整页CSS旋转处理旋转锁定；关闭该功能后横竖屏仍有完整布局。
-- 屏幕常亮：启动时、回到前台时、第一次轻点屏幕时各请求一次 Wake Lock；失败时只提示一次设置自动锁定的方法。
+- 屏幕常亮：启动不自动请求或提示；在用户click事件处理函数中直接同步调用navigator.wakeLock.request("screen")，不能先await、setTimeout或切换微任务。后台释放后，回到前台仅等待下一次轻点重获锁。只有用户点击请求失败才记录一次失败反馈，分不支持/系统拒绝（可能低电量模式）/其他错误；主界面不弹提示，状态只在通用页的开关下显示已生效/等待轻点屏幕/不可用（原因），关闭时显示已关闭。异步过期的锁立即释放。
 - 3D 翻转元素都加 -webkit-backface-visibility: hidden；不在同一元素上同时使用 3D 变换、圆角和 overflow: hidden。
 - 启动时先用 document.fonts.load 加载当前字体再显示时钟，避免字体闪烁。
 - 新版本发布后，显示一个“有新版本，轻点更新”的小提示，点击后刷新。
@@ -521,31 +544,32 @@ interface DigitTransition {
 ### 16.1 Codex 交付前必须自测通过
 
 - npm run build 成功，并打印 JS、CSS、字体和缓存总量，均不超过第 13 节的预算。
-- npm test 全部通过，至少包含：整秒对齐计算；中英文日期格式；Europe/Dublin 2026-10-25 夏令时回拨；12/24 小时制；32 套配色的对比度不低于 3:1；设置的默认值合并与版本迁移；36 条语录中英文都不为空；OKLCH 色板生成的颜色都在屏幕色域内。
+- npm test 全部通过，至少包含：整秒对齐计算；中英文日期格式；Europe/Dublin 2026-10-25 夏令时回拨；12/24 小时制；40 套配色的对比度不低于 3:1；设置的默认值合并与版本迁移；36 条语录中英文都不为空；OKLCH 色板生成的颜色都在屏幕色域内。
 - 电量单元测试包含：接口不支持时不渲染组件；15% / 50% / 100% 及充电状态的 SVG 填充；严格低于 20% 的未充电红色；两个事件即时更新；显示与百分比开关、中英文文案、旧设置默认合并。
 - 强制横屏单元测试包含：竖屏互换宽高和横屏布局；横屏不旋转；左右切换；关闭不旋转且无按钮；安全区映射；拖动距离/速度坐标换算；设置默认合并；按钮4秒隐藏及轻点唤回。
-- 如果环境能安装 Playwright 的 WebKit：对 6 种时钟、16 个主题的日夜配色、横竖屏各截一张图，人工检查无错位、无溢出；不能安装则跳过，并在 README 中说明。
+- 如果环境能安装 Playwright 的 WebKit：对 6 种时钟、20 个主题的日夜配色、横竖屏各截一张图，人工检查无错位、无溢出；不能安装则跳过，并在 README 中说明。
+- 新增单测验证语录固定轨道/占位、独立语言、双语署名和自定义迁移，面板吸附/点击/档位生命周期，以及启动无常亮误报、点击同步请求成功、点击失败仅一次、失败分类和后台等待再点击。
 - 写好 README.md（中文）：项目说明、本地运行、部署步骤、iPhone 安装步骤、调试参数、字体与配色致谢。
 
 ### 16.2 你在 iPhone 上的验收清单
 
 1. 从主屏幕打开是全屏，没有地址栏；默认是「纯粹」黑白 + 翻页卡片 + 翻页动画，并显示秒。
 1. 时间与 time.is 网站一致，误差不到 0.5 秒；日期和星期正确。
-1. 放着不动 10 分钟，屏幕不熄灭。
+1. 轻点屏幕后在通用页确认“已生效”，放置10分钟不熄屏；后台返回显示“等待轻点屏幕”，再次轻点重新生效。失败原因只在通用页显示，主界面无提示。
 1. 横竖屏切换布局都正常，灵动岛不遮挡内容。
 1. 开启iPhone旋转锁定后，默认向左横放按横屏显示；旋转按钮切换左右并平滑翻转180°。通用页选择关闭后恢复正常竖屏；真正横屏时不额外旋转也不显示旋转按钮。打开设置默认是主题皮肤，旋转后的点击和面板拖动正确。
 1. 竖屏日期行避开系统状态栏；iPhone Safari 不出现应用内电量或空占位。支持 Battery Status API 的浏览器显示电池比例和充电闪电，显示页两个开关即时生效，默认不显示百分比；睡眠时随其他内容调暗。
 1. 打开 ?speed=60，逐一切换 6 种时钟和 6 种动画，动作流畅，没有闪烁。
-1. 16 个主题逐一点开，日夜切换时颜色平滑过渡。
+1. 20 个主题逐一点开，日夜切换时颜色平滑过渡。
 1. 自定义背景、字体颜色、蒙版；日间和夜间分别保存；对比度提示和推荐色正常。
-1. 12 款字体都能正常显示。
+1. 15 款字体都能正常显示。
 1. 显示页的所有开关都生效；手动选一个其他时区，时间正确。
-1. 语录按设置轮换；能添加和删除自定义语录。
-1. 中英文切换后，界面、日期、语录都变成对应语言。
+1. 语录按设置轮换、双语署名正确，自定义作者可选且原文不翻译；原生横竖屏与强制横屏下，语录开关、1/2行切换、轮换和字号变化都不移动时钟（关闭防烧屏微移后检查）。
+1. 中英文切换后，界面和日期变成对应语言；语录只跟随单独的语录语言选择。
 1. 睡眠模式（可临时把时间段改到当前时间测试）：逐渐调暗、红色夜视、轻点临时恢复都正常。
 1. 开飞行模式后重新打开 App，仍能正常使用。
 1. 完全关闭 App 再打开，所有设置都还在。
-1. 设置面板拖动关闭跟手，没有卡顿。
+1. 设置面板上拉展开、下拉回默认、默认继续下拉关闭；横条轻点切档；同次打开保留档位、重开默认。原生横竖屏及强制横屏下手势均正确，卡片网格换行且内容可滚动。
 
 ## 17. 交给 Codex 的执行指令
 
