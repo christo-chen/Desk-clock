@@ -17,10 +17,21 @@ export function rainTexture() {
 }
 export function effectTokens(effect:string,night:boolean,red=false) {
  if(red)return 'none';
- if(effect==='chrono')return night?'scan warm-glow':'none';
  if(effect==='rain')return 'rain';
- if(effect==='realm')return night?'vignette':'paper';
+ if(effect==='halloween')return night?'vignette-deep paper':'paper';
+ if(effect==='christmas')return 'snow';
  if(effect==='hellas')return night?'none':'paper';
  return effect==='paper'||night?effect:'none';
 }
 export function effectsMoving(enabled:boolean,sleep:boolean,reduced:boolean,hidden:boolean){return enabled&&!sleep&&!reduced&&!hidden;}
+export function snowPoints(seed:number) {
+ const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+ return Array.from({length:36},()=>({x:random()*128,y:random()*256,r:.8+random()*1.4,alpha:.5+random()*.5}));
+}
+export function snowTexture() {
+ for(const [layer,seed] of [2412,2512].entries()){
+  const canvas=document.createElement('canvas');canvas.width=128;canvas.height=256;const ctx=canvas.getContext('2d')!;
+  for(const {x,y,r,alpha} of snowPoints(seed)){ctx.fillStyle=`rgba(255,255,255,${alpha})`;for(const dx of [-128,0,128])for(const dy of [-256,0,256]){ctx.beginPath();ctx.arc(x+dx,y+dy,r,0,Math.PI*2);ctx.fill();}}
+  document.documentElement.style.setProperty(`--snow-${layer}`,`url(${canvas.toDataURL()})`);canvas.width=canvas.height=0;
+ }
+}

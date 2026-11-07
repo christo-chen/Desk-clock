@@ -18,5 +18,7 @@ export function hexHue(hex:string) {
 export function recommendations(digit:string,night:boolean,key:string) {
  const hue=hexHue(digit); return key==='digit' ? [gamutColor(night?.88:.28,.08,hue),night?'#FFFFFF':'#1C1C1E'] : [gamutColor(night?.16:.95,.015,hue),gamutColor(night?.12:.98,.012,hue)];
 }
+export const gradientHues=[[300,265],[350,20],[30,65],[75,105],[145,180],[200,235],[255,290],[320,355]];
+export function gradientPresets(night:boolean):[string,string][] {return gradientHues.map(([a,b])=>[gamutColor(night?.80:.46,.14,a),gamutColor(night?.72:.40,.14,b)]);}
 // Generated once using the exact SPEC OKLCH parameters; no runtime palette computation.
 export const palette: string[] = ["#2E100E", "#5D2725", "#B54A46", "#EB827B", "#FEC8C3", "#2C1302", "#592D08", "#AB5805", "#E28D4F", "#FDCCAC", "#271700", "#513400", "#986606", "#D49838", "#F3D2A4", "#211A01", "#463A02", "#86700C", "#BEA333", "#E6D8A3", "#09200B", "#1B451E", "#308639", "#6DBA70", "#BBE4BC", "#01201D", "#03443F", "#128379", "#11BDAF", "#A3E7DD", "#061C31", "#143C62", "#1F74BF", "#60AAF3", "#BBDBFE", "#141831", "#2F3664", "#5B67C2", "#8D9DF5", "#CCD5FE", "#20142D", "#442E5C", "#8559B2", "#B88FE6", "#E2CCFD", "#2B101E", "#582740", "#AB4A7D", "#E181B0", "#FCC5DE"];

@@ -13,7 +13,7 @@ describe('时间、日期和计时器',()=>{
 });
 describe('主题和色板',()=>{
  for(const theme of themes)for(const mode of ['day','night'] as const)it(`${theme.id} ${mode} 两项对比度至少3:1`,()=>{expect(contrast(theme[mode].digit,theme[mode].card)).toBeGreaterThanOrEqual(3);expect(contrast(theme[mode].muted,theme[mode].bg)).toBeGreaterThanOrEqual(3);});
- it('40套配色，主题默认pure',()=>{expect(themes).toHaveLength(20);expect(themes[0].id).toBe('pure');expect(themes[0].day.bg).toBe('#F2F2F7');});
+ it('38套配色，主题默认pure',()=>{expect(themes).toHaveLength(19);expect(themes[0].id).toBe('pure');expect(themes[0].day.bg).toBe('#F2F2F7');});
  it('全部50个OKLCH色板色值在sRGB范围并匹配生成公式',()=>{expect(palette).toHaveLength(50);hues.forEach((h,i)=>lights.forEach((l,j)=>{expect(palette[i*5+j]).toBe(gamutColor(l,chromas[j],h));expect(palette[i*5+j]).toMatch(/^#[\dA-F]{6}$/);let c=chromas[j];while(oklchRGB(l,c,h).some(v=>v<0||v>1))c*=.96;expect(oklchRGB(l,c,h).every(v=>v>=0&&v<=1)).toBe(true);}));});
  it('自定义配色按日夜隔离，夜视红独立',()=>{const s=structuredClone(defaults);s.custom.day.bg='#FF0000';expect(colorsFor(s,'day').bg).toBe('#FF0000');expect(colorsFor(s,'night').bg).toBe('#1C1C1E');expect(colorsFor(s,'day',true).digit).toBe('#8B1A1A');});
 });

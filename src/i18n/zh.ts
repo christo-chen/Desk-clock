@@ -1,7 +1,8 @@
 export const zh = {
- epic:'史诗',quoteLanguage:'语录语言',author:'作者（可选）',authorPlaceholder:'作者，最多 40 个字符',themeMotion:'主题动态特效',expandSheet:'展开设置面板',collapseSheet:'收起设置面板',wakeActive:'已生效',wakeWaiting:'等待轻点屏幕',wakeUnavailable:'不可用',wakeUnsupported:'不支持此功能',wakeDenied:'被系统拒绝（可能开启了低电量模式）',wakeOther:'其他错误',wakeDisabled:'已关闭',
+ quoteLanguage:'语录语言',author:'作者（可选）',authorPlaceholder:'作者，最多 40 个字符',themeMotion:'主题动态特效',expandSheet:'展开设置面板',collapseSheet:'收起设置面板',wakeActive:'已生效',wakeWaiting:'等待轻点屏幕',wakeUnavailable:'不可用',wakeUnsupported:'不支持此功能',wakeDenied:'被系统拒绝（可能开启了低电量模式）',wakeOther:'其他错误',wakeDisabled:'已关闭',
+ festive:'节日',glowAnim:'辉光',hourCycle:'整点轮转',gradient:'渐变',customGradient:'自定义渐变',gradientTop:'顶部',gradientBottom:'底部',
  themes:'主题皮肤',clock:'时钟',anim:'动画',font:'字体',bg:'背景',digit:'字体颜色',card:'蒙版',display:'显示',quotes:'语录',general:'通用',
- all:'全部',minimalStyle:'极简',retro:'复古',tech:'科技',cyber:'赛博朋克',nature:'自然',soft:'柔和',eastern:'东方',art:'文艺',
+ all:'全部',minimalStyle:'极简',retro:'复古',tech:'科技',cyber:'赛博朋克',nature:'自然',soft:'柔和',art:'文艺',
  flip:'翻页卡片',segment:'数码管',dotmatrix:'点阵',minimal:'极简大字',nixie:'辉光管',analog:'极简指针',
  flipAnim:'翻页',pixel:'像素转换',drop:'数字掉落',scale:'缩放',evaporate:'向上蒸发',none:'无动画',
  day:'日间',night:'夜间',editing:'正在编辑',recommended:'推荐',palette:'色板',freeColor:'自由取色',hue:'色相',saturation:'饱和度',lightness:'亮度',hex:'十六进制',contrast:'数字对蒙版',lowContrast:'数字可能看不清',

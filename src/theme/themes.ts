@@ -1,4 +1,4 @@
-export interface Colors { bg: string; card: string; digit: string; muted: string; accent: string }
+export interface Colors { bg: string; card: string; digit: string; muted: string; accent: string; digitGradient?: [string,string] }
 export interface Theme { id: string; zh: string; en: string; style: string; font: string; effect: string; day: Colors; night: Colors }
 export const themes: Theme[] = [
   {
@@ -152,7 +152,11 @@ export const themes: Theme[] = [
       "card": "#1A1726",
       "digit": "#FF7EDB",
       "muted": "#848BBD",
-      "accent": "#36F9F6"
+      "accent": "#36F9F6",
+      "digitGradient": [
+        "#FF7EDB",
+        "#9D8CFF"
+      ]
     }
   },
   {
@@ -174,7 +178,11 @@ export const themes: Theme[] = [
       "card": "#17122B",
       "digit": "#00F0FF",
       "muted": "#8A7FB0",
-      "accent": "#FF2E97"
+      "accent": "#FF2E97",
+      "digitGradient": [
+        "#00F0FF",
+        "#FF2E97"
+      ]
     }
   },
   {
@@ -266,32 +274,10 @@ export const themes: Theme[] = [
     }
   },
   {
-    "id": "ink",
-    "zh": "水墨",
-    "en": "Ink Wash",
-    "style": "eastern",
-    "font": "dm-serif-display",
-    "effect": "paper",
-    "day": {
-      "bg": "#EFE9DC",
-      "card": "#FFFBF0",
-      "digit": "#3D3B4F",
-      "muted": "#50616D",
-      "accent": "#9D2933"
-    },
-    "night": {
-      "bg": "#16161A",
-      "card": "#1E1E24",
-      "digit": "#D6ECF0",
-      "muted": "#758A99",
-      "accent": "#C8505A"
-    }
-  },
-  {
     "id": "ukiyo-e",
     "zh": "浮世绘",
     "en": "Ukiyo-e",
-    "style": "eastern",
+    "style": "art",
     "font": "big-shoulders-display",
     "effect": "none",
     "day": {
@@ -350,29 +336,11 @@ export const themes: Theme[] = [
       "card": "#1F1D2E",
       "digit": "#EBBCBA",
       "muted": "#908CAA",
-      "accent": "#C4A7E7"
-    }
-  },
-  {
-    "id": "chrono",
-    "zh": "时序局",
-    "en": "Chrono Bureau",
-    "style": "retro",
-    "font": "michroma",
-    "effect": "chrono",
-    "day": {
-      "bg": "#E7DCC6",
-      "card": "#C9622A",
-      "digit": "#FBF3E2",
-      "muted": "#6E5A43",
-      "accent": "#7C7E1E"
-    },
-    "night": {
-      "bg": "#1D1B17",
-      "card": "#33291F",
-      "digit": "#EBDDBF",
-      "muted": "#C97A3C",
-      "accent": "#A7A93C"
+      "accent": "#C4A7E7",
+      "digitGradient": [
+        "#EBBCBA",
+        "#C4A7E7"
+      ]
     }
   },
   {
@@ -398,32 +366,10 @@ export const themes: Theme[] = [
     }
   },
   {
-    "id": "realm",
-    "zh": "王国",
-    "en": "Realm",
-    "style": "epic",
-    "font": "cinzel",
-    "effect": "realm",
-    "day": {
-      "bg": "#E9DDC2",
-      "card": "#F3EAD5",
-      "digit": "#3A2A1A",
-      "muted": "#6E5B42",
-      "accent": "#8B2A2A"
-    },
-    "night": {
-      "bg": "#16130F",
-      "card": "#241C14",
-      "digit": "#C9A45C",
-      "muted": "#8C7A5E",
-      "accent": "#A33A32"
-    }
-  },
-  {
     "id": "hellas",
     "zh": "古希腊",
     "en": "Hellas",
-    "style": "epic",
+    "style": "retro",
     "font": "marcellus",
     "effect": "hellas",
     "day": {
@@ -439,6 +385,50 @@ export const themes: Theme[] = [
       "digit": "#E8DCC4",
       "muted": "#8A9AB0",
       "accent": "#D27A4E"
+    }
+  },
+  {
+    "id": "halloween",
+    "zh": "万圣节",
+    "en": "Halloween",
+    "style": "festive",
+    "font": "cinzel",
+    "effect": "halloween",
+    "day": {
+      "bg": "#E9DED2",
+      "card": "#1A1410",
+      "digit": "#E8661A",
+      "muted": "#6E5444",
+      "accent": "#B8460F"
+    },
+    "night": {
+      "bg": "#050403",
+      "card": "#0E0B09",
+      "digit": "#F2701D",
+      "muted": "#9A6A48",
+      "accent": "#F2701D"
+    }
+  },
+  {
+    "id": "christmas",
+    "zh": "圣诞",
+    "en": "Christmas",
+    "style": "festive",
+    "font": "dm-serif-display",
+    "effect": "christmas",
+    "day": {
+      "bg": "#F3EEE4",
+      "card": "#FFFDF8",
+      "digit": "#B3262E",
+      "muted": "#5F7366",
+      "accent": "#1F5E3B"
+    },
+    "night": {
+      "bg": "#0E1F17",
+      "card": "#13291F",
+      "digit": "#F4EBD9",
+      "muted": "#8FA898",
+      "accent": "#C8323A"
     }
   }
 ];

@@ -1,8 +1,9 @@
 import type { zh } from './zh';
 export const en: Record<keyof typeof zh,string> = {
- epic:'Epic',quoteLanguage:'Quote language',author:'Author (optional)',authorPlaceholder:'Author, up to 40 characters',themeMotion:'Animated theme effects',expandSheet:'Expand settings',collapseSheet:'Collapse settings',wakeActive:'Active',wakeWaiting:'Waiting for a tap',wakeUnavailable:'Unavailable',wakeUnsupported:'This feature is not supported',wakeDenied:'Denied by the system (Low Power Mode may be on)',wakeOther:'Other error',wakeDisabled:'Off',
+ quoteLanguage:'Quote language',author:'Author (optional)',authorPlaceholder:'Author, up to 40 characters',themeMotion:'Animated theme effects',expandSheet:'Expand settings',collapseSheet:'Collapse settings',wakeActive:'Active',wakeWaiting:'Waiting for a tap',wakeUnavailable:'Unavailable',wakeUnsupported:'This feature is not supported',wakeDenied:'Denied by the system (Low Power Mode may be on)',wakeOther:'Other error',wakeDisabled:'Off',
+ festive:'Holiday',glowAnim:'Glow',hourCycle:'Hourly cycle',gradient:'Gradient',customGradient:'Custom gradient',gradientTop:'Top',gradientBottom:'Bottom',
  themes:'Themes',clock:'Clock',anim:'Animation',font:'Fonts',bg:'Background',digit:'Digits',card:'Cards',display:'Display',quotes:'Quotes',general:'General',
- all:'All',minimalStyle:'Minimal',retro:'Retro',tech:'Technology',cyber:'Cyberpunk',nature:'Nature',soft:'Soft',eastern:'Eastern',art:'Literary',
+ all:'All',minimalStyle:'Minimal',retro:'Retro',tech:'Technology',cyber:'Cyberpunk',nature:'Nature',soft:'Soft',art:'Literary',
  flip:'Flip cards',segment:'Seven-segment',dotmatrix:'Dot matrix',minimal:'Minimal digits',nixie:'Nixie tubes',analog:'Minimal analog',
  flipAnim:'Flip',pixel:'Pixel dissolve',drop:'Drop',scale:'Scale',evaporate:'Evaporate',none:'No animation',
  day:'Day',night:'Night',editing:'Editing',recommended:'Recommended',palette:'Palette',freeColor:'Custom color',hue:'Hue',saturation:'Saturation',lightness:'Lightness',hex:'Hex',contrast:'Digits on cards',lowContrast:'Digits may be hard to read',

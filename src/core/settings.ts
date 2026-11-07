@@ -1,14 +1,15 @@
 import { themes } from '../theme/themes';
 import { fonts } from '../data/fonts';
+import {parseGradient} from '../theme/gradient';
 export type ClockKind = 'flip' | 'segment' | 'dotmatrix' | 'minimal' | 'nixie' | 'analog';
-export type AnimKind = 'flip' | 'pixel' | 'drop' | 'scale' | 'evaporate' | 'none';
+export type AnimKind = 'flip' | 'pixel' | 'drop' | 'scale' | 'evaporate' | 'glow' | 'none';
 export type Mode = 'day' | 'night';
 export type ForceLandscape = 'off' | 'left' | 'right';
 export interface CustomQuote { text: string; author: string }
 export interface Settings {
   v: number; lang: 'zh' | 'en'; theme: string; clock: ClockKind; anim: AnimKind;
-  analogMotion: 'sweep' | 'tick'; font: string | null;
-  custom: Record<Mode, Partial<Record<'bg' | 'card' | 'digit', string>>>;
+  analogMotion: 'sweep' | 'tick'; font: string | null; autoGlow:boolean; hourCycle:boolean;
+  custom: Record<Mode, Partial<Record<'bg' | 'card' | 'digit' | 'digitGradient', string>>>;
   show: { seconds: boolean; h12: boolean; year: boolean; month: boolean; day: boolean; weekday: boolean; quote: boolean; battery: boolean; batteryPercent: boolean };
   tz: string | null;
   appearance: { mode: 'system' | 'schedule' | Mode; dayAt: string; nightAt: string };
@@ -17,7 +18,7 @@ export interface Settings {
   wakeLock: boolean; burnIn: boolean; themeMotion: boolean; forceLandscape: ForceLandscape; installDismissed?: boolean;
 }
 export const defaults: Settings = {
-  v: 1, lang: 'zh', theme: 'pure', clock: 'flip', anim: 'flip', analogMotion: 'sweep', font: null,
+  v: 1, lang: 'zh', theme: 'pure', clock: 'flip', anim: 'flip', analogMotion: 'sweep', font: null, autoGlow:false, hourCycle:true,
   custom: { day: {}, night: {} }, show: { seconds: true, h12: false, year: true, month: true, day: true, weekday: true, quote: true, battery: true, batteryPercent: false },
   tz: null, appearance: { mode: 'system', dayAt: '07:00', nightAt: '19:00' }, sleep: { on: false, from: '23:00', to: '07:00', dim: 0.7, red: false },
   quote: { mode: 'rotate', every: 30, source: 'preset', size: 'm', lang: 'en', custom: [] }, wakeLock: true, burnIn: true, themeMotion: true, forceLandscape: 'left'
@@ -45,7 +46,7 @@ export function migrateSettings(raw: unknown): Settings {
   s.lang = valid(s.lang, ['zh','en'], 'zh') as Settings['lang'];
   s.forceLandscape = valid(s.forceLandscape, ['off','left','right'], 'left') as ForceLandscape;
   s.clock = valid(s.clock, ['flip','segment','dotmatrix','minimal','nixie','analog'], 'flip') as ClockKind;
-  s.anim = valid(s.anim, ['flip','pixel','drop','scale','evaporate','none'], 'flip') as AnimKind;
+  s.anim = valid(s.anim, ['flip','pixel','drop','scale','evaporate','glow','none'], 'flip') as AnimKind;
   s.analogMotion = s.analogMotion === 'tick' ? 'tick' : 'sweep';
   s.appearance.mode = valid(s.appearance.mode, ['system','schedule','day','night'], 'system') as Settings['appearance']['mode'];
   s.quote.mode = valid(s.quote.mode, ['fixed','rotate','daily'], 'rotate') as Settings['quote']['mode'];
@@ -61,6 +62,7 @@ export function migrateSettings(raw: unknown): Settings {
     const color = r.custom?.[mode]?.[key];
     if (typeof color === 'string' && /^#[\da-f]{6}$/i.test(color)) s.custom[mode][key] = color.toUpperCase();
   }
+  for(const mode of ['day','night'] as const){const g=parseGradient(r.custom?.[mode]?.digitGradient);if(g)s.custom[mode].digitGradient=g.join(',');}
   if (s.tz) try { new Intl.DateTimeFormat('en', {timeZone: s.tz}); } catch { s.tz = null; }
   const items: unknown[] = s.quote.custom;
   s.quote.custom = items.map(item => {
@@ -72,3 +74,9 @@ export function migrateSettings(raw: unknown): Settings {
   while (settingsBytes(s) > 8192) s.quote.custom.pop();
   return s;
 }
+export function selectTheme(s:Settings,id:string) {
+ if(id==='nixie'&&s.anim!=='glow'){s.anim='glow';s.autoGlow=true;}
+ else if(s.theme==='nixie'&&id!=='nixie'&&s.anim==='glow'&&s.autoGlow){s.anim='flip';s.autoGlow=false;}
+ s.theme=id;s.font=null;s.custom={day:{},night:{}};
+}
+export function selectAnimation(s:Settings,kind:AnimKind){s.anim=kind;s.autoGlow=false;}

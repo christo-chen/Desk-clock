@@ -10,6 +10,6 @@ describe('设置面板吸附档位',()=>{
  it('点击横条的微移不当成拖动，取消后清空',()=>{const d=new SheetDrag();d.begin(10,10,0);d.move(12,11,10,0);expect(d.travel).toBeLessThan(6);d.cancel();expect(d.travel).toBe(0);expect(d.signedOffset).toBe(0);});
 });
 describe('主题特效',()=>{
- it('新增主题的日夜效果正确，夜视关闭特效',()=>{expect(effectTokens('chrono',false)).toBe('none');expect(effectTokens('chrono',true)).toBe('scan warm-glow');expect(effectTokens('realm',false)).toBe('paper');expect(effectTokens('realm',true)).toBe('vignette');expect(effectTokens('hellas',true)).toBe('none');expect(effectTokens('rain',true,true)).toBe('none');});
+ it('新增主题的日夜效果正确，夜视关闭特效',()=>{expect(effectTokens('halloween',false)).toBe('paper');expect(effectTokens('halloween',true)).toBe('vignette-deep paper');expect(effectTokens('christmas',false)).toBe('snow');expect(effectTokens('christmas',true)).toBe('snow');expect(effectTokens('hellas',true)).toBe('none');expect(effectTokens('rain',true,true)).toBe('none');});
  it('睡眠/减弱动态效果/后台/开关关闭均停止运动而保留纹理',()=>{expect(effectsMoving(true,false,false,false)).toBe(true);expect(effectsMoving(false,false,false,false)).toBe(false);expect(effectsMoving(true,true,false,false)).toBe(false);expect(effectsMoving(true,false,true,false)).toBe(false);expect(effectsMoving(true,false,false,true)).toBe(false);expect(effectTokens('rain',false)).toBe('rain');});
 });

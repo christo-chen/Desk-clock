@@ -1,7 +1,8 @@
+import {canvasColor} from '../theme/gradient';
 import {glyphs} from '../data/dotmatrix-glyphs';
 export function raster(cell:HTMLElement,value:string) {
  const c=document.createElement('canvas');c.width=24;c.height=36;const ctx=c.getContext('2d',{willReadFrequently:true})!;
- const css=getComputedStyle(cell);ctx.fillStyle=css.color;ctx.font=`28px ${css.fontFamily}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(value,12,20,23);return c;
+ const css=getComputedStyle(cell);ctx.fillStyle=canvasColor(ctx,cell,36);ctx.font=`28px ${css.fontFamily}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(value,12,20,23);return c;
 }
 export function pixel(cell:HTMLElement,from:string,to:string,delay:number) {
  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d')!;canvas.className='animation-canvas';

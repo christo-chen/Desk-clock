@@ -1,5 +1,5 @@
 export interface DigitTransition {run(cell:HTMLElement,from:string,to:string,opts:{delay:number}):Animation[]|void}
-export interface TransitionOptions {delay:number; reduced:boolean; shape:(value:string)=>HTMLElement}
+export interface TransitionOptions {delay:number; reduced:boolean; shape:(value:string)=>HTMLElement;quick?:boolean}
 const active = new Map<HTMLElement,()=>void>();
 export function finishCell(cell:HTMLElement) {active.get(cell)?.();}
 export function finishAll() {for(const finish of [...active.values()]) finish();}
