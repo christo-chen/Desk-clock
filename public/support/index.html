@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>技术支持 Support · 桌面主题时钟</title>
+<meta name="description" content="桌面主题时钟（Desk Clock: Flip & Nixie）的使用帮助与联系方式。">
+<link rel="icon" href="../favicon.ico">
+<style>
+:root{--on:#fff;--bg:#F5F1EB;--card:#FFFFFF;--text:#1C1C1E;--muted:#6C6C70;--line:#E4DED5;--accent:#C24A17;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0B0806;--card:#17110D;--text:#F2ECE6;--muted:#9A8C80;--line:#2A211C;--accent:#FF7A3D;--on:#0B0806}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:680px;margin:0 auto;padding:40px 20px 64px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+header img{width:52px;height:52px;border-radius:12px}
+.app{font-weight:600}
+.sub{color:var(--muted);font-size:14px}
+.lang{margin-left:auto;flex-shrink:0;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{all:unset;cursor:pointer;padding:4px 12px;white-space:nowrap;font-size:14px;color:var(--muted)}
+.lang button[aria-pressed=true]{background:var(--accent);color:var(--on)}
+h1{font-size:30px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}
+.date{color:var(--muted);font-size:14px;margin:0 0 28px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:28px}
+.box p{margin:0}
+.box strong{color:var(--accent)}
+h2{font-size:18px;margin:32px 0 8px}
+p,li{margin:0 0 10px}
+ul{padding-left:20px;margin:0 0 10px}
+a{color:var(--accent)}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;gap:16px;flex-wrap:wrap}
+[data-l]{display:none}
+html[data-lang=zh] [data-l=zh],html[data-lang=en] [data-l=en]{display:block}
+html[data-lang=zh] span[data-l=zh],html[data-lang=en] span[data-l=en]{display:inline}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";flex-shrink:0;color:var(--muted);font-weight:400}
+details[open] summary::after{content:"\2212"}
+details p{margin:10px 0 0;color:var(--text)}
+.mail{display:inline-block;margin-top:6px;padding:10px 18px;border-radius:999px;background:var(--accent);color:var(--on);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <img src="../app-icon.png" alt="">
+  <div><div class="app" data-l="zh">桌面主题时钟</div><div class="app" data-l="en">Desk Clock: Flip &amp; Nixie</div><div class="sub">iPhone · iPad</div></div>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-set="zh">中文</button><button type="button" data-set="en">EN</button></div>
+</header>
+
+<section data-l="zh">
+  <h1>技术支持</h1>
+  <p class="date">使用中遇到问题，先看看下面的常见问题。</p>
+  <details><summary>屏幕为什么还会自动锁定？</summary><p>请在设置的「通用」里确认「屏幕常亮」已打开，并让 App 保持在前台。切到其他 App 或回到主屏幕后，系统会恢复正常的自动锁定。</p></details>
+  <details><summary>怎么切换日间和夜间？</summary><p>在「通用」→「外观模式」里可以选择跟随系统、定时、始终日间或始终夜间。主界面的太阳按钮只做临时切换，重新打开 App 后会回到你设定的外观模式。</p></details>
+  <details><summary>晚上放在床头太亮怎么办？</summary><p>打开「睡眠模式」，设定开始和结束时间，可以选择调暗屏幕或红色夜视。</p></details>
+  <details><summary>长时间显示会烧屏吗？</summary><p>默认开启的「防烧屏微移」会每分钟把画面整体平移几个像素，降低 OLED 屏幕长期显示同一画面的风险。</p></details>
+  <details><summary>改乱了，怎么恢复？</summary><p>在「通用」底部点「恢复默认」，所有设置会回到初始状态。你自己添加的语录也会被清除。</p></details>
+  <details><summary>支持哪些设备？</summary><p>需要 iOS / iPadOS 17 或更新版本，iPhone 和 iPad 都可以使用。</p></details>
+  <h2>联系我们</h2>
+  <p>没找到答案、发现问题或有功能建议，欢迎发邮件。附上设备型号、系统版本和截图，能更快定位问题，一般会在几天内回复。</p>
+  <a class="mail" href="mailto:christochen1109@gmail.com?subject=%E6%A1%8C%E9%9D%A2%E4%B8%BB%E9%A2%98%E6%97%B6%E9%92%9F%20%E5%8F%8D%E9%A6%88">christochen1109@gmail.com</a>
+</section>
+
+<section data-l="en">
+  <h1>Support</h1>
+  <p class="date">Having trouble? Start with the common questions below.</p>
+  <details><summary>Why does my screen still lock?</summary><p>Make sure Keep screen awake is turned on under General in Settings, and keep the app in the foreground. If you switch to another app or go to the Home Screen, the system's normal auto-lock applies again.</p></details>
+  <details><summary>How do I switch between day and night?</summary><p>Go to General → Appearance and choose Follow system, Scheduled, Always day or Always night. The sun button on the main screen is only a temporary switch; the app returns to your chosen appearance the next time it opens.</p></details>
+  <details><summary>It's too bright on my nightstand.</summary><p>Turn on Sleep mode, set a start and end time, and choose to dim the screen or use red night vision.</p></details>
+  <details><summary>Will it cause screen burn-in?</summary><p>Burn-in protection is on by default. It moves the whole picture by a few pixels every minute to reduce the risk of OLED burn-in.</p></details>
+  <details><summary>I changed too much. How do I start over?</summary><p>Tap Restore defaults at the bottom of General. All settings go back to their defaults, and quotes you added are removed.</p></details>
+  <details><summary>Which devices are supported?</summary><p>iPhone and iPad running iOS / iPadOS 17 or later.</p></details>
+  <h2>Contact</h2>
+  <p>Can't find an answer, found a bug or have an idea? Send an email. Including your device model, iOS version and a screenshot helps a lot. You'll usually hear back within a few days.</p>
+  <a class="mail" href="mailto:christochen1109@gmail.com?subject=Desk%20Clock%20feedback">christochen1109@gmail.com</a>
+</section>
+
+<footer>
+  <a href="../privacy/"><span data-l="zh">隐私政策</span><span data-l="en">Privacy Policy</span></a>
+  <a href="../"><span data-l="zh">网页版</span><span data-l="en">Web version</span></a>
+  <span>© 2026 Weize Chen</span>
+</footer>
+</main>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search).get('lang');
+  var l=q==='en'||q==='zh'?q:(/^zh/i.test(navigator.language||'')?'zh':'en');
+  function set(x){document.documentElement.dataset.lang=x;document.documentElement.lang=x==='zh'?'zh-CN':'en';
+    document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.set===x)});}
+  document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){set(b.dataset.set)}});
+  set(l);
+})();
+</script>
+</body>
+</html>
